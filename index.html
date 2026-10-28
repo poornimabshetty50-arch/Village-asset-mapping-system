@@ -1,0 +1,34 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Village Asset Mapping System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Arial; margin: 25px; background: #f0f8f0; }
+    h1 { color: darkgreen; }
+    .card { background: white; padding: 15px; margin: 10px 0; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Village Asset Mapping System</h1>
+  <p>Explore important assets in our village.</p>
+
+  <h2>Village Assets</h2>
+  <div id="assets"></div>
+
+  <script>
+    const assets = [
+      { name: "Government School", type: "Education" },
+      { name: "Health Centre", type: "Healthcare" },
+      { name: "Water Tank", type: "Water Facility" },
+      { name: "Village Road", type: "Transport" }
+    ];
+
+    document.getElementById("assets").innerHTML =
+      assets.map(a =>
+        `<div class="card"><h3>${a.name}</h3><p>${a.type}</p></div>`
+      ).join("");
+  </script>
+</body>
+</html>
