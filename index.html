@@ -4,31 +4,69 @@
 <head>
   <title>Village Asset Mapping System</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
-    body { font-family: Arial; margin: 25px; background: #f0f8f0; }
+    body { font-family: Arial; margin: 20px; background: #f0f8f0; }
     h1 { color: darkgreen; }
-    .card { background: white; padding: 15px; margin: 10px 0; border-radius: 8px; }
+    #map { height: 350px; margin: 15px 0; }
+    .card { background: white; padding: 12px; margin: 10px 0; }
   </style>
 </head>
 <body>
   <h1>Village Asset Mapping System</h1>
-  <p>Explore important assets in our village.</p>
+  <p>Explore village assets on the map.</p>
 
+  <select id="type" onchange="showAssets()">
+    <option>All</option>
+    <option>School</option>
+    <option>Hospital</option>
+    <option>Water Tank</option>
+    <option>Road</option>
+  </select>
+
+  <div id="map"></div>
   <h2>Village Assets</h2>
-  <div id="assets"></div>
+  <div id="list"></div>
+  <p>Note: Locations below are sample data, not verified village locations.</p>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     const assets = [
-      { name: "Government School", type: "Education" },
-      { name: "Health Centre", type: "Healthcare" },
-      { name: "Water Tank", type: "Water Facility" },
-      { name: "Village Road", type: "Transport" }
+      {name:"Sample School", type:"School", lat:12.305, lon:76.655},
+      {name:"Sample Hospital", type:"Hospital", lat:12.315, lon:76.665},
+      {name:"Sample Water Tank", type:"Water Tank", lat:12.295, lon:76.645},
+      {name:"Sample Road", type:"Road", lat:12.300, lon:76.675}
     ];
 
-    document.getElementById("assets").innerHTML =
-      assets.map(a =>
-        `<div class="card"><h3>${a.name}</h3><p>${a.type}</p></div>`
-      ).join("");
+    const map = L.map("map").setView([12.305, 76.655], 13);
+
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap contributors"
+    }).addTo(map);
+
+    assets.forEach(a => {
+      a.marker = L.marker([a.lat, a.lon])
+        .bindPopup(a.name + " - " + a.type);
+    });
+
+    function showAssets() {
+      const type = document.getElementById("type").value;
+      const list = document.getElementById("list");
+      list.innerHTML = "";
+
+      assets.forEach(a => {
+        if (type === "All" || a.type === type) {
+          a.marker.addTo(map);
+          list.innerHTML +=
+            `<div class="card"><b>${a.name}</b><p>${a.type}</p>
+            <button onclick="map.setView([${a.lat},${a.lon}],16);
+            assets[${assets.indexOf(a)}].marker.openPopup()">View on Map</button></div>`;
+        } else {
+          map.removeLayer(a.marker);
+        }
+      });
+    }
+    showAssets();
   </script>
 </body>
 </html>
